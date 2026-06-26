@@ -4,7 +4,7 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "aws" {
-  region = "us-east-1"
+  region = "ap-south-1"
 }
 EOF
 }
@@ -17,11 +17,12 @@ remote_state {
     if_exists = "overwrite_terragrunt"
   }
   config = {
-    bucket         = "jayasurya-devops-tf-state-12345"
+    bucket         = "jayasurya-eks-state-apsouth1-2026-new"
     key            = "${path_relative_to_include()}/terraform.tfstate"
-    region         = "us-east-1"
+    region         = "ap-south-1"
     encrypt        = true
     # ADD THIS LINE to prevent S3 endpoint lookups from failing in specific network setups
+    dynamodb_table          = "jayasurya-eks-lock-table-2026-new"
     skip_metadata_api_check = true 
   }
 }

@@ -1,0 +1,46 @@
+# Stage 1: Dependencies
+FROM node:22-alpine AS dependencies
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Stage 2: Build
+FROM node:22-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build 2>/dev/null || echo "No build script found"
+
+# Stage 3: Production (Alpine)
+FROM node:22-alpine AS production
+WORKDIR /app
+
+# Copy necessary files from previous stages
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=build /app/app.js ./
+COPY --from=build /app/package.json ./
+
+# DELETE npm entirely to eliminate its vulnerabilities
+RUN rm -rf /usr/local/lib/node_modules/npm \
+    && rm -f /usr/local/bin/npm \
+    && rm -f /usr/local/bin/npx
+
+# Alpine has wget built-in, making health checks much easier than Distroless
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1
+
+EXPOSE 3000
+CMD ["node", "app.js"]
+# .dockerignore
+# node_modules
+# npm-debug.log
+# Dockerfile*
+# .dockerignore
+# .git
+# .gitignore
+# README.md
+# .env
+# .nyc_output
+# coverage
+# .cache

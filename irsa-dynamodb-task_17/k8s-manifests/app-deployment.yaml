@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: irsa-test-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: irsa-test
+  template:
+    metadata:
+      labels:
+        app: irsa-test
+    spec:
+      serviceAccountName: dynamodb-sa  # <--- IRSA MAGIC HAPPENS HERE
+      containers:
+      - name: python-app
+        image: python:3.9-slim
+        command: ["/bin/sh", "-c"]
+        args:
+          - "pip install -r /app/requirements.txt && python -u /app/main.py"
+        volumeMounts:
+        - name: code-volume
+          mountPath: /app
+      volumes:
+      - name: code-volume
+        configMap:
+          name: irsa-app-code

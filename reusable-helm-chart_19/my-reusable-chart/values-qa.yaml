@@ -1,0 +1,26 @@
+# QA Environment Overrides
+replicaCount: 2
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 400m
+    memory: 512Mi
+
+configData:
+  APP_ENV: "qa"
+  LOG_LEVEL: "info"
+  DB_PORT: "5432"
+
+secretData:
+  DB_PASSWORD: "qa-password-456"
+  API_TOKEN: "qa-token-xyz"
+
+ingress:
+  enabled: true
+  host: "qa.api.local"
+
+autoscaling:
+  enabled: false

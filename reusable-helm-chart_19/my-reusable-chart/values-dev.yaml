@@ -1,0 +1,25 @@
+# DEV Environment Overrides
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+configData:
+  APP_ENV: "development"
+  LOG_LEVEL: "debug"
+  DB_PORT: "5432"
+
+secretData:
+  DB_PASSWORD: "dev-password-123"
+  API_TOKEN: "dev-token-abc"
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false

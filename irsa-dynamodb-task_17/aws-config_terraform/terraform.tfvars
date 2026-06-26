@@ -1,0 +1,7 @@
+cluster_name        = "dev-eks-cluster"
+cluster_endpoint    = "https://49DC84636CF7792C043E25FE68FC1474.gr7.us-east-1.eks.amazonaws.com"
+oidc_provider_arn   = "arn:aws:iam::010376234075:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/49DC84636CF7792C043E25FE68FC1474"
+oidc_provider_url   = "oidc.eks.us-east-1.amazonaws.com/id/49DC84636CF7792C043E25FE68FC1474"
+namespace            = "default"
+service_account_name = "dynamodb-sa"
+dynamodb_table_arn   = "arn:aws:dynamodb:us-east-1:010376234075:table/TaskTable"

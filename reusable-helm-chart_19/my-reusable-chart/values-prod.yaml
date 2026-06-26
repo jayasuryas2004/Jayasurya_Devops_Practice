@@ -1,0 +1,29 @@
+# PROD Environment Overrides
+replicaCount: 3
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+
+configData:
+  APP_ENV: "production"
+  LOG_LEVEL: "warn"
+  DB_PORT: "5432"
+
+secretData:
+  DB_PASSWORD: "prod-secure-password-789"
+  API_TOKEN: "prod-secure-token-999"
+
+ingress:
+  enabled: true
+  host: "api.production.com"
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75

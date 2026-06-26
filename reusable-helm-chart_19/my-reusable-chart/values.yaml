@@ -1,0 +1,42 @@
+# Default values for my-reusable-chart
+
+# --- PHASE 2 VARIABLES ---
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+# --- PHASE 3 VARIABLES ---
+configData:
+  APP_ENV: "production"
+  LOG_LEVEL: "info"
+  DB_PORT: "5432"
+
+secretData:
+  DB_PASSWORD: "super-secret-password"
+  API_TOKEN: "abc-123-xyz-token"
+
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  host: "api.local"
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80

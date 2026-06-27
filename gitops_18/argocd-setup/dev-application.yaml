@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # Pointing to your existing public monorepo
+    repoURL: 'https://github.com/jayasuryas2004/Jayasurya_Devops_Practice.git'
+    targetRevision: HEAD
+    # Telling ArgoCD to look inside the specific lab folder
+    path: gitops_18/overlays/dev 
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

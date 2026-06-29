@@ -8,7 +8,7 @@ WORKDIR javaapp/
 # plugin, goals etc.
 
 COPY .mvn/ .mvn/
-
+  
 COPY .mvnw pom.xml ./
 
 RUN .mvnw dependency:go-offline

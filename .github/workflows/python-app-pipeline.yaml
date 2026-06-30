@@ -27,8 +27,13 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          cd build_cicd_pipeline_23
-          python -m pytest tests/
+          # Print the current directory to see where we are
+          pwd
+          # List the files to see if 'tests' exists here
+          ls -R
+          # Run pytest with an explicit path to the root
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/build_cicd_pipeline_23
+          python -m pytest build_cicd_pipeline_23/tests/
 
       - name: Security Scan (SAST - Bandit)
         run: |

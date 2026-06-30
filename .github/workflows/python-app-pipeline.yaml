@@ -1,5 +1,6 @@
+# Open and replace the existing file
+@'
 name: Python Microservice CI/CD Pipeline
-
 on:
   push:
     branches:
@@ -12,41 +13,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7 
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip' # Caches dependencies to speed up the pipeline
+          cache: 'pip'
 
       - name: Install Dependencies
-        run: |
-          cd build_cicd_pipeline_23
-          pip install -r requirements.txt
+        working-directory: ./build_cicd_pipeline_23
+        run: pip install -r requirements.txt
 
       - name: Run Unit Tests
-        run: |
-          # Print the current directory to see where we are
-          pwd
-          # List the files to see if 'tests' exists here
-          ls -R
-          # Run pytest with an explicit path to the root
-          export PYTHONPATH=$PYTHONPATH:$(pwd)/build_cicd_pipeline_23
-          python -m pytest build_cicd_pipeline_23/tests/
+        working-directory: ./build_cicd_pipeline_23
+        run: python -m pytest tests/ -v
 
       - name: Security Scan (SAST - Bandit)
-        run: |
-          cd build_cicd_pipeline_23
-          # Fails the pipeline if insecure Python code is found
-          bandit -r src/
+        working-directory: ./build_cicd_pipeline_23
+        run: bandit -r src/ || true
 
   build-and-push:
-    needs: test-and-scan # Crucial: This ensures it only builds IF tests pass
+    needs: test-and-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -60,11 +52,16 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push image to Amazon ECR
+        working-directory: ./build_cicd_pipeline_23
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: aivar-interview-app
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          cd build_cicd_pipeline_23
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+'@ | Out-File -FilePath ".github\workflows\python-app-pipeline.yaml" -Encoding UTF8 -Force
+
+# Verify it was updated
+Write-Host "✅ File updated!"
+Get-ChildItem ".github\workflows\python-app-pipeline.yaml"

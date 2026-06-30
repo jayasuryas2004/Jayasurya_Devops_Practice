@@ -44,7 +44,7 @@ jobs:
         working-directory: ./build_cicd_pipeline_23
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: aivar-interview-app
+          ECR_REPOSITORY: build_cicd_23
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .

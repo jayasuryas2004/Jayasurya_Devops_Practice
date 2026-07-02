@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dynamodb-app
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: dynamodb-app
+
+  template:
+    metadata:
+      labels:
+        app: dynamodb-app
+
+    spec:
+      serviceAccountName: dynamodb-app
+
+      containers:
+      - name: dynamodb-app
+        image: 181640953339.dkr.ecr.us-east-1.amazonaws.com/dynamodb-app:v1
+
+        ports:
+        - containerPort: 5000
